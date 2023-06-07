@@ -13,7 +13,7 @@ jobs:
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        creds: ${{ secrets.SDP_SECRETS }}
     - name: ACR authentication
       uses: azure/docker-login@v1
       with:
@@ -29,4 +29,5 @@ jobs:
       uses: azure/webapps-deploy@v2
       with:
         app-name: 'sdptestapp'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         images: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
