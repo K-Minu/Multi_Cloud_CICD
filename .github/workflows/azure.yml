@@ -6,14 +6,15 @@ env:
   CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}
 
 jobs:
-  build:
+  build-and-deploy-to-dev:
     runs-on: ubuntu-latest
+    environment: dev
     steps:
     - uses: actions/checkout@master
     - name: Azure authentication
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.SDP_SECRETS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: ACR authentication
       uses: azure/docker-login@v1
       with:
