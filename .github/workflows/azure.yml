@@ -35,4 +35,4 @@ jobs:
         acrName: sdptestregistry
         acrUsername: ${{ secrets.REGISTRY_USERNAME }}
         acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
-        location: 'Korea Central'
+        location: koreacentral
