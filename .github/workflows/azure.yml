@@ -32,7 +32,7 @@ jobs:
         resource-group: ${{ secrets.RESOURCE_GROUP }}
         dns-name-label: ${{ secrets.RESOURCE_GROUP }}${{ github.run_number }}
         image: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-        registry-login-server: ${{ secrets.CONTAINER_REGISTRY }}
+        registry-login-server: ${{ env.CONTAINER_REGISTRY }}
         registry-username: ${{ secrets.REGISTRY_USERNAME }}
         registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         name: aci-myapp
