@@ -35,4 +35,3 @@ jobs:
         acrName: sdptestregistry
         acrUsername: ${{ secrets.REGISTRY_USERNAME }}
         acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
-        containerAppName: sdp-test-container-app
