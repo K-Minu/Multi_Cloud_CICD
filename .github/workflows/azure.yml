@@ -36,5 +36,4 @@ jobs:
         registry-login-server: ${{ env.CONTAINER_REGISTRY }}
         registry-username: ${{ secrets.REGISTRY_USERNAME }}
         registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-        acrName: aca-myapp
         location: 'Korea Central'
