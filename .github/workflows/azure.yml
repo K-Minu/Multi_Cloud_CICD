@@ -30,10 +30,9 @@ jobs:
       uses: azure/container-apps-deploy-action@v1
       with:
         appSourcePath: ${{ github.workspace }}
-        resource-group: ${{ secrets.RESOURCE_GROUP }}
-        imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+        resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+        imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+        acrName: sdptestregistry
         acrUsername: ${{ secrets.REGISTRY_USERNAME }}
         acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
-        acrName: sdptestregistry
-        location: 'Korea Central'
         containerAppName: sdp-test-container-app
