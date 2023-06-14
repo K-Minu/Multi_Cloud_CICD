@@ -6,6 +6,8 @@ on:
 env:
   # set this to your preferred AWS region, e.g. us-west-1
   AWS_REGION: ap-northeast-2
+  # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: sdp_poc
   # set this to your Amazon ECS service name
   ECS_SERVICE: sdp-poc-application-service1
   # set this to your Amazon ECS cluster name
@@ -18,9 +20,10 @@ env:
   ROLE_ARN: arn:aws:iam::919188484580:role/sdp-poc-github-action-role
 
 jobs:
-  deploy-to-azure:
+  deploy-to-aws-ecs-fargate:
     runs-on: ubuntu-latest
     environment: production
+
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -33,19 +36,13 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: latest
-
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: ${{ env.ECS_TASK_DEFINITION }}
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
