@@ -16,7 +16,7 @@ env:
 jobs:
   deploy-to-azure:
     runs-on: ubuntu-latest
-    environmnet: production
+    environment: production
     steps:
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def

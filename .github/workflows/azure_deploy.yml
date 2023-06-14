@@ -10,7 +10,7 @@ env:
 jobs:
   deploy-to-azure:
     runs-on: ubuntu-latest
-    environmnet: dev
+    environment: dev
     steps:
       - name: "Deploy to Azure Web App for Container"
         uses: azure/container-apps-deploy-action@v1
