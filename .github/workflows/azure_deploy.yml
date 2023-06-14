@@ -31,8 +31,8 @@ jobs:
         with:
           appSourcePath: ${{ github.workspace }}
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
-          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-          imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:latest
+          imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:latest
           acrName: sdptestregistry
           acrUsername: ${{ secrets.REGISTRY_USERNAME }}
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
