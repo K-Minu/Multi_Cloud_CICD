@@ -40,8 +40,8 @@ jobs:
 
       - name: Docker Build & push to ACR
         run: |
-          docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-          docker push ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:latest
+          docker push ${{ env.CONTAINER_REGISTRY }}/myapp:latest
 
   build-and-deploy-to-aws:
     runs-on: ubuntu-latest
