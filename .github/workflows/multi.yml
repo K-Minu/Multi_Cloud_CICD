@@ -7,16 +7,9 @@ env:
   AWS_REGION: ap-northeast-2
   # set this to your Amazon ECR repository name
   ECR_REPOSITORY: sdp_poc
-  # set this to your Amazon ECS service name
-  ECS_SERVICE: sdp-poc-application-service1
-  # set this to your Amazon ECS cluster name
-  ECS_CLUSTER: sdp-poc-application-cluster
-  # set this to the path to your Amazon ECS task definition file, e.g. .aws/task-definition.json
-  ECS_TASK_DEFINITION: task-definition.json
-  # set this to the name of the container in the containerDefinitions section of your task definition
-  CONTAINER_NAME: sdp-poc-application-container
   # open id connect
   ROLE_ARN: arn:aws:iam::919188484580:role/sdp-poc-github-action-role
+
   # Azure Credential
   CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}
 
@@ -50,18 +43,6 @@ jobs:
           docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
           docker push ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
 
-      - name: "Deploy to Azure Web App for Container"
-        uses: azure/container-apps-deploy-action@v1
-        with:
-          appSourcePath: ${{ github.workspace }}
-          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
-          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-          acrName: sdptestregistry
-          acrUsername: ${{ secrets.REGISTRY_USERNAME }}
-          acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
-          location: koreacentral
-          containerAppName: sdp-test-app
-
   build-and-deploy-to-aws:
     runs-on: ubuntu-latest
     environment: production
@@ -93,19 +74,3 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS task definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true

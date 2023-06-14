@@ -1,0 +1,25 @@
+name: Deploy to Azure Container App
+
+on:
+  workflow_dispatch:
+
+env:
+  # Azure Credential
+  CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}
+
+jobs:
+  deploy-to-azure:
+    runs-on: ubuntu-latest
+    environmnet: dev
+    steps:
+      - name: "Deploy to Azure Web App for Container"
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}
+          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          acrName: sdptestregistry
+          acrUsername: ${{ secrets.REGISTRY_USERNAME }}
+          acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
+          location: koreacentral
+          containerAppName: sdp-test-app
