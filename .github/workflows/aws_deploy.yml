@@ -19,7 +19,7 @@ env:
   # open id connect
   ROLE_ARN: arn:aws:iam::919188484580:role/sdp-poc-github-action-role
 
-  permissions:
+permissions:
   # This is required for requesting the JWT
   id-token: write
   # This is required for actions/checkout
