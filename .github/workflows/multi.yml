@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECS and Azure Container App
+name: Image Build and Push to ECR and ACR
 
 on: [push]
 
