@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
 
 env:
+  # set this to your preferred AWS region, e.g. us-west-1
+  AWS_REGION: ap-northeast-2
   # set this to your Amazon ECS service name
   ECS_SERVICE: sdp-poc-application-service1
   # set this to your Amazon ECS cluster name
@@ -12,12 +14,31 @@ env:
   CONTAINER_NAME: sdp-poc-application-container
   # set this to the path to your Amazon ECS task definition file, e.g. .aws/task-definition.json
   ECS_TASK_DEFINITION: task-definition.json
+  # open id connect
+  ROLE_ARN: arn:aws:iam::919188484580:role/sdp-poc-github-action-role
 
 jobs:
   deploy-to-azure:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-region: ${{ env.AWS_REGION }}
+            role-session-name: GitHubActions
+            role-to-assume: ${{ env.ROLE_ARN }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
