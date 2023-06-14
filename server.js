@@ -8,7 +8,7 @@ const PORT = 80;
 // App
 const app = express();
 app.get("/", (req, res) => {
-  res.send("Hello World notification test ~ ~");
+  res.send("notification test ~ ~");
 });
 
 app.listen(PORT, () => {
