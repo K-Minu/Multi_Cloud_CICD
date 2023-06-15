@@ -29,10 +29,9 @@ jobs:
       - name: "Deploy to Azure Web App for Container"
         uses: azure/container-apps-deploy-action@v1
         with:
-          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:latest
           acrName: sdptestregistry
+          containerAppName: sdp-test-app
+          resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+          imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
           acrUsername: ${{ secrets.REGISTRY_USERNAME }}
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
-          location: koreacentral
-          containerAppName: sdp-test-app
