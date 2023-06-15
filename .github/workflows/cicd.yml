@@ -1,9 +1,6 @@
 name: Deploy to Amazon ECS and Azure Container App
 
-on:
-  push:
-    branches:
-      - master
+on: [push]
 
 env:
   # set this to your preferred AWS region, e.g. us-west-1
@@ -52,6 +49,7 @@ jobs:
         run: |
           docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
           docker push ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+
       - name: "Deploy to Azure Web App for Container"
         uses: azure/container-apps-deploy-action@v1
         with:
@@ -95,6 +93,7 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
