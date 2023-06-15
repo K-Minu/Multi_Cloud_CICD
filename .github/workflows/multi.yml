@@ -12,7 +12,6 @@ env:
   ECR_REPOSITORY: sdp_poc
   # open id connect
   ROLE_ARN: arn:aws:iam::919188484580:role/sdp-poc-github-action-role
-
   # Azure Credential
   CONTAINER_REGISTRY: ${{ secrets.REGISTRY_URL }}
 
