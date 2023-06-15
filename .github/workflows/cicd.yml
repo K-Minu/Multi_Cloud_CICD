@@ -1,6 +1,9 @@
 name: Deploy to Amazon ECS and Azure Container App
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 env:
   # set this to your preferred AWS region, e.g. us-west-1
