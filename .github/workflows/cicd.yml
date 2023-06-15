@@ -61,6 +61,7 @@ jobs:
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
           location: koreacentral
           containerAppName: sdp-test-app
+          containerAppEnvironment: sdp-test-env
 
   build-and-deploy-to-aws:
     runs-on: ubuntu-latest
