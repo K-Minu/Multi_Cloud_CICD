@@ -32,6 +32,6 @@ jobs:
           acrName: sdptestregistry
           containerAppName: sdp-test-app
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          imageToDeploy: mcr.microsoft.com/azuredocs/containerapps-$containerAppName:latest
           acrUsername: ${{ secrets.REGISTRY_USERNAME }}
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
