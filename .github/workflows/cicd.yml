@@ -66,6 +66,10 @@ jobs:
           containerAppName: sdp-test-app
           containerAppEnvironment: sdp-test-env
 
+      - name: "New Relic APM Test"
+        run: |
+          docker run -e NEW_RELIC_LICENSE_KEY=2cf598354e84137ebf051624638e296cFFFFNRAL -e NEW_RELIC_APP_NAME="sdp-test-app-apm" ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+
   build-and-deploy-to-aws:
     runs-on: ubuntu-latest
     environment: production
