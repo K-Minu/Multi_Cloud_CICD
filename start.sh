@@ -1,3 +1,5 @@
+#!/bin/sh
+
 node -r newrelic server.js
 node --experimental-loader=newrelic/esm-loader.mjs server.js
 docker run \

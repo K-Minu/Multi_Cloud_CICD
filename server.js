@@ -1,4 +1,3 @@
-require("newrelic");
 ("use strict");
 
 const express = require("express");
@@ -9,7 +8,7 @@ const PORT = 80;
 // App
 const app = express();
 app.get("/", (req, res) => {
-  res.send("monitoring test");
+  res.send("APM test");
 });
 
 app.listen(PORT, () => {
