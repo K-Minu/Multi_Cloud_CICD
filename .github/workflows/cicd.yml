@@ -36,34 +36,29 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: Azure authentication
-        uses: azure/actions/login@v1
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: ACR authentication
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ env.CONTAINER_REGISTRY }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: Docker Build & push to ACR
+      - name: Build and push image
+        id: build-image
         run: |
-          docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-          docker push ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          az acr build --image ${{ env.CONTAINER_REGISTRY }}/sampleapp:${{ github.sha }} --registry ${{ env.CONTAINER_REGISTRY }} --file "Dockerfile" .
 
       - name: "Deploy to Azure Web App for Container"
         uses: azure/container-apps-deploy-action@v1
         with:
           appSourcePath: ${{ github.workspace }}
           resourceGroup: ${{ secrets.RESOURCE_GROUP }}
-          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          imageToBuild: ${{ env.CONTAINER_REGISTRY }}/sampleapp:${{ github.sha }}
           acrName: sdptestregistry
           acrUsername: ${{ secrets.REGISTRY_USERNAME }}
           acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
           location: koreacentral
-          containerAppName: sdp-test-app
+          containerAppName: sdp-test-app2
           containerAppEnvironment: sdp-test-env
 
   build-and-deploy-to-aws:
