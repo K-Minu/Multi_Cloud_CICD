@@ -43,10 +43,10 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Docker Build & push to ACR
+      - name: Build and push image
+        id: build-image
         run: |
-          docker build . -t ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
-          docker push ${{ env.CONTAINER_REGISTRY }}/myapp:${{ github.sha }}
+          az acr build --image ${{ env.CONTAINER_REGISTRY }}/sampleapp:${{ github.sha }} --registry ${{ env.CONTAINER_REGISTRY }} --file "Dockerfile" .
 
       - name: "Deploy to Azure Web App for Container"
         uses: azure/container-apps-deploy-action@v1
