@@ -49,7 +49,7 @@ jobs:
           az acr build --image sampleapp:${{ github.sha }} --registry ${{ env.CONTAINER_REGISTRY }} --file "Dockerfile" .
 
       - name: "Deploy to Azure Web App for Container"
-        uses: azure/container-apps-deploy-action@v1
+        id: container-apps-deploy
         run: |
           az containerapp create -n sdp-test-app2 -g ${{ secrets.RESOURCE_GROUP }} --image ${{ env.CONTAINER_REGISTRY }}/sampleapp:${{ github.sha }} --environment sdp-test-env --target-port 80 --registry-server sdptestregistry.azurecr.io --registry-username sdptestregistry --registry-password ${{ secrets.REGISTRY_PASSWORD }}
 
