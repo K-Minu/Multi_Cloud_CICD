@@ -25,10 +25,8 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res, next) => {
-  setTimeout(() => {
-    res.json({ message: "Hello World!" });
-    next();
-  }, Math.round(Math.random() * 200));
+  res.sendFile(__dirname + "/index.html");
+  Math.round(Math.random() * 200);
 });
 
 app.get("/bad", (req, res, next) => {
@@ -36,7 +34,9 @@ app.get("/bad", (req, res, next) => {
 });
 
 app.get("/checkout", (req, res, next) => {
-  const paymentMethod = Math.round(Math.random()) === 0 ? "stripe" : "paypal";
+  let random_num = Math.round(Math.random() * 10);
+  const paymentMethod = random_num > 9 ? "fail" : "sucess";
+  console.log(`값 >> ${random_num} // ${paymentMethod}`);
 
   checkoutsTotal.inc({
     payment_method: paymentMethod,
