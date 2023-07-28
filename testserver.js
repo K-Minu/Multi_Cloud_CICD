@@ -46,6 +46,32 @@ app.get("/checkout", (req, res, next) => {
   next();
 });
 
+app.get("/checkout/fail", (req, res, next) => {
+  let random_num = 10;
+  const paymentMethod = random_num > 9 ? "fail" : "sucess";
+  console.log(`값 >> ${random_num} // ${paymentMethod}`);
+
+  checkoutsTotal.inc({
+    payment_method: paymentMethod,
+  });
+
+  res.json({ status: "fail ++" });
+  next();
+});
+
+app.get("/checkout/sucess", (req, res, next) => {
+  let random_num = 1;
+  const paymentMethod = random_num > 9 ? "fail" : "sucess";
+  console.log(`값 >> ${random_num} // ${paymentMethod}`);
+
+  checkoutsTotal.inc({
+    payment_method: paymentMethod,
+  });
+
+  res.json({ status: "sucess ++" });
+  next();
+});
+
 app.get("/metrics", async (req, res) => {
   try {
     res.set("Content-Type", Prometheus.register.contentType);
