@@ -2,9 +2,12 @@
 
 const express = require("express");
 const Prometheus = require("prom-client");
+const bodyParser = require("body-parser");
 
 const app = express();
 const port = 80;
+let playBtn;
+
 const metricsInterval = Prometheus.collectDefaultMetrics();
 const checkoutsTotal = new Prometheus.Counter({
   name: "checkouts_total",
@@ -23,6 +26,8 @@ app.use((req, res, next) => {
   res.locals.startEpoch = Date.now();
   next();
 });
+
+app.use(bodyParser.json());
 
 app.get("/", (req, res, next) => {
   res.sendFile(__dirname + "/index.html");
@@ -102,6 +107,42 @@ app.use((req, res, next) => {
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
+});
+
+// checkout 페이지 이동 없이 metric Data 입력 버튼 이벤트 추가
+app.post("/clicked", (req, res) => {
+  const receivedData = req.body;
+
+  if (receivedData.message) {
+    checkoutsTotal.inc({
+      payment_method: "sucess",
+    });
+  } else {
+    checkoutsTotal.inc({
+      payment_method: "fail",
+    });
+  }
+
+  // Send a response back to the client
+  res.json({ message: "Click event received on the server" });
+});
+
+// 버튼 클릭시 일정 시간동안 계속 metrics Data 입력 하는 이벤트 추가
+app.post("/sendData", (req, res) => {
+  const receivedData = req.body;
+
+  if (receivedData.message) {
+    playBtn = setInterval(function () {
+      checkoutsTotal.inc({
+        payment_method: "sucess",
+      });
+    }, 60000);
+  } else {
+    clearInterval(playBtn);
+  }
+
+  // Send a response back to the client
+  res.json({ message: "Interval event received on the server" });
 });
 
 // Graceful shutdown

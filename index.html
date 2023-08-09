@@ -7,12 +7,83 @@
   <body>
     <div class="sdp">
       <text>SDP POC OIDC Test Code</text>
-      <button onclick="doAction()">TEST</button>
+      <button onclick="sucessBtn()">Sucess ++</button>
+      <button onclick="failBtn()">Fail ++</button>
+      <p>
+        <button onclick="doAction()">TEST</button>
+      </p>
+      <div style="margin-top: 50px">
+        <text>INTERVAL TEST</text>
+        <p>
+          <button onclick="startBtn()">START</button>
+          <button onclick="endBtn()">STOP</button>
+        </p>
+      </div>
       <script>
         function doAction() {
           for (i = 0; i < 1000000; i++) {
             console.log(i);
           }
+        }
+
+        function sucessBtn() {
+          const data = { message: 1 };
+          fetch("/clicked", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data.message);
+            });
+        }
+        function failBtn() {
+          const data = { message: 0 };
+          fetch("/clicked", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data.message);
+            });
+        }
+
+        function startBtn() {
+          console.log(`start btn`);
+          const data = { message: 1 };
+          fetch("/sendData", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data.message);
+            });
+        }
+        function endBtn() {
+          console.log(`stop btn`);
+          const data = { message: 0 };
+          fetch("/sendData", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(data.message);
+            });
         }
       </script>
     </div>
