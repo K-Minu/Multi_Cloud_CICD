@@ -3,10 +3,23 @@
 const express = require("express");
 const Prometheus = require("prom-client");
 const bodyParser = require("body-parser");
+const axios = require("axios");
+const register = new Prometheus.Registry();
+const repeatCount = 100;
 
 const app = express();
 const port = 80;
+const defaulturl =
+  "https://sdp-test-app2.livelybeach-1db350aa.koreacentral.azurecontainerapps.io/metrics";
+const replicaId = "SDP_POC_APP_ID";
+
 let playBtn;
+const requests = Array.from({ length: repeatCount }, () =>
+  axios.get(defaulturl)
+);
+const targetWords = [replicaId];
+let tmpTwo = 0;
+let tmpBool = false;
 
 const metricsInterval = Prometheus.collectDefaultMetrics();
 const checkoutsTotal = new Prometheus.Counter({
@@ -20,6 +33,17 @@ const httpRequestDurationMicroseconds = new Prometheus.Histogram({
   labelNames: ["method", "route", "code"],
   buckets: [0.1, 5, 15, 50, 100, 200, 300, 400, 500], // buckets for response time from 0.1ms to 500ms
 });
+const replicaNameMetric = new Prometheus.Gauge({
+  name: "replica_name",
+  help: "Name of the current replica",
+  labelNames: ["replica_id"],
+});
+
+// Set replica name based on your identification method
+replicaNameMetric.labels(replicaId).set(0);
+
+// Register the metric
+register.registerMetric(replicaNameMetric);
 
 // Runs before each requests
 app.use((req, res, next) => {
@@ -37,6 +61,43 @@ app.get("/", (req, res, next) => {
 app.get("/bad", (req, res, next) => {
   next(new Error("My Error"));
 });
+
+Promise.all(requests)
+  .then((responses) => {
+    responses.forEach((response, index) => {
+      const metricsData = response.data;
+      const lines = metricsData.split("\n");
+      const tmpWord = {};
+      let tmpOne;
+
+      for (const line of lines) {
+        for (const word of targetWords) {
+          if (line.includes(word)) {
+            const startIndex = line.indexOf(word) + word.length;
+            const restOfLine = line.slice(startIndex).trim();
+            const wordAfterSpace = restOfLine.split(" ")[1];
+            tmpWord[word] = parseInt(wordAfterSpace);
+          }
+        }
+      }
+      tmpOne = tmpWord.sucess;
+      if (tmpTwo < tmpOne) {
+        tmpTwo = tmpOne;
+        tmpBool = true;
+      }
+      console.log(`Extracted Last Three Characters ${index}:`, tmpTwo);
+    });
+    if (tmpBool) {
+      tmpTwo++;
+      replicaNameMetric.labels(replicaId).set(tmpTwo);
+      // console.log(`Replica Num >> ${tmpTwo} , ${changeCount}`);
+    } else {
+      replicaNameMetric.labels(replicaId).set(1);
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
 
 app.get("/checkout", (req, res, next) => {
   let random_num = Math.round(Math.random() * 10);
