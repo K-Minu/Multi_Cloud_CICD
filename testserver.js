@@ -69,7 +69,6 @@ Promise.all(requests)
       const lines = metricsData.split("\n");
       const tmpWord = {};
       let tmpOne;
-
       for (const line of lines) {
         for (const word of targetWords) {
           if (line.includes(word)) {
@@ -80,17 +79,17 @@ Promise.all(requests)
           }
         }
       }
-      tmpOne = tmpWord.sucess;
+      tmpOne = tmpWord.SDP_POC_APP_ID;
       if (tmpTwo < tmpOne) {
         tmpTwo = tmpOne;
         tmpBool = true;
       }
-      console.log(`Extracted Last Three Characters ${index}:`, tmpTwo);
+      // console.log(`Extracted Last Three Characters ${index}:`, tmpTwo);
     });
     if (tmpBool) {
       tmpTwo++;
       replicaNameMetric.labels(replicaId).set(tmpTwo);
-      // console.log(`Replica Num >> ${tmpTwo} , ${changeCount}`);
+      // console.log(`Replica Num >> ${tmpTwo}`);
     } else {
       replicaNameMetric.labels(replicaId).set(1);
     }
@@ -99,6 +98,7 @@ Promise.all(requests)
     console.error("Error:", error);
   });
 
+/*
 app.get("/checkout", (req, res, next) => {
   let random_num = Math.round(Math.random() * 10);
   const paymentMethod = random_num > 9 ? "fail" : "sucess";
@@ -137,6 +137,7 @@ app.get("/checkout/sucess", (req, res, next) => {
   res.json({ status: "sucess ++" });
   next();
 });
+*/
 
 app.get("/metrics", async (req, res) => {
   try {
@@ -183,8 +184,6 @@ app.post("/clicked", (req, res) => {
       payment_method: "fail",
     });
   }
-
-  // Send a response back to the client
   res.json({ message: "Click event received on the server" });
 });
 
@@ -201,8 +200,6 @@ app.post("/sendData", (req, res) => {
   } else {
     clearInterval(playBtn);
   }
-
-  // Send a response back to the client
   res.json({ message: "Interval event received on the server" });
 });
 
